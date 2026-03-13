@@ -1,7 +1,14 @@
-import type { NextConfig } from "next";
-
+import type { NextConfig } from 'next'
+ 
 const nextConfig: NextConfig = {
-  /* config options here */
-};
-
-export default nextConfig;
+  turbopack: {
+    rules: {
+      '*.svg': {
+        loaders: ['@svgr/webpack'],
+        as: '*.js',
+      },
+    },
+  },
+}
+ 
+export default nextConfig
