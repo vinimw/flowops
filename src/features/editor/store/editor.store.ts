@@ -1,8 +1,7 @@
 import { create } from "zustand";
 import { subscribeWithSelector } from "zustand/middleware";
-import type { Flow, DomainNode, Position } from "@/domain/flow/types";
+import type { Flow, DomainNode, Position, NodeType } from "@/domain/flow/types";
 import { validateFlow } from "@/domain/flow/validate";
-import type { NodeType } from "@/domain/flow/types";
 import { createId } from "@/shared/lib/id";
 import { createNode } from "@/domain/flow/factory";
 
@@ -11,6 +10,8 @@ type EditorState = {
   selectedNodeId: string | null;
   dirty: boolean;
   addNode: (type: NodeType) => void;
+  deleteNode: (nodeId: string) => void;
+  deleteEdge: (edgeId: string) => void;
 
   diagnostics: ReturnType<typeof validateFlow>;
 
@@ -67,6 +68,44 @@ export const useEditorStore = create<EditorState>()(
       );
 
       const next = { ...flow, nodes };
+      set({
+        flow: next,
+        dirty: true,
+        diagnostics: validateFlow(next),
+      });
+    },
+
+    deleteNode: (nodeId) => {
+      const flow = get().flow;
+      if (!flow) return;
+
+      const nodes = flow.nodes.filter((n) => n.id !== nodeId);
+
+      // remove edges conectadas ao node
+      const edges = flow.edges.filter(
+        (e) => e.source !== nodeId && e.target !== nodeId
+      );
+
+      const next: Flow = { ...flow, nodes, edges };
+
+      const selectedNodeId =
+        get().selectedNodeId === nodeId ? null : get().selectedNodeId;
+
+      set({
+        flow: next,
+        dirty: true,
+        selectedNodeId,
+        diagnostics: validateFlow(next),
+      });
+    },
+
+    deleteEdge: (edgeId) => {
+      const flow = get().flow;
+      if (!flow) return;
+
+      const edges = flow.edges.filter((e) => e.id !== edgeId);
+      const next: Flow = { ...flow, edges };
+
       set({
         flow: next,
         dirty: true,

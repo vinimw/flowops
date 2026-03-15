@@ -20,12 +20,18 @@ export function FlowCanvas({
   onSelectNode,
   selectedNodeId,
   onMoveNode,
+  onSelectEdge,
+  selectedEdgeId,
+  onDeleteEdge,
 }: {
   nodes: DomainNode[];
   edges: DomainEdge[];
   selectedNodeId?: string | null;
   onSelectNode?: (nodeId: string | null) => void;
   onMoveNode?: (nodeId: string, position: { x: number; y: number }) => void;
+  onSelectEdge?: (edgeId: string | null) => void;
+  selectedEdgeId?: string | null;
+  onDeleteEdge?: (edgeId: string) => void;
 }) {
   const [rfNodes, setRfNodes] = useState(() => domainNodesToRF(nodes));
   const [rfEdges, setRfEdges] = useState(() => domainEdgesToRF(edges));
@@ -44,13 +50,18 @@ export function FlowCanvas({
     return rfNodes.map((n) => ({ ...n, selected: n.id === selectedId }));
   }, [rfNodes, selectedId]);
 
+  const rfEdgesWithSelection = useMemo(() => {
+  const id = selectedEdgeId ?? null;
+    return rfEdges.map((e) => ({ ...e, selected: e.id === id }));
+  }, [rfEdges, selectedEdgeId]);
+
   const isDraggingRef = useRef(false);
 
   return (
     <div style={{ height: 520, border: '1px solid #ddd', borderRadius: 8 }}>
       <ReactFlow
         nodes={rfNodesWithSelection}
-        edges={rfEdges}
+        edges={rfEdgesWithSelection}
         nodesDraggable
         nodesConnectable={false}
         elementsSelectable
