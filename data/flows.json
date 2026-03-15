@@ -61,10 +61,48 @@
           "format": "text",
           "storeAs": "result"
         }
+      },
+      {
+        "id": "node_b14c1a23b2d4a_19cf2c24bbb",
+        "type": "trigger",
+        "position": {
+          "x": 261,
+          "y": 113
+        },
+        "data": {
+          "triggerType": "manual",
+          "description": "Start"
+        }
+      },
+      {
+        "id": "node_255745da9e18c_19cf2c252fe",
+        "type": "agent",
+        "position": {
+          "x": 127,
+          "y": 212
+        },
+        "data": {
+          "agentName": "Agent",
+          "instruction": "",
+          "model": "mock",
+          "timeoutMs": 15000
+        }
+      },
+      {
+        "id": "node_09bc794b7af29_19cf2c25d12",
+        "type": "action",
+        "position": {
+          "x": 324,
+          "y": 219
+        },
+        "data": {
+          "actionType": "http_request",
+          "config": {}
+        }
       }
     ],
     "edges": [],
     "createdAt": "2026-03-15T17:34:02.612Z",
-    "updatedAt": "2026-03-15T17:34:02.612Z"
+    "updatedAt": "2026-03-15T18:29:22.425Z"
   }
 ]

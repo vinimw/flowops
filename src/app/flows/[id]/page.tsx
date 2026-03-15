@@ -7,39 +7,41 @@ import { useFlowById, useUpdateFlow } from '@/features/flows/hooks/useFlows';
 import { validateFlow, hasBlockingErrors } from '@/domain/flow/validate';
 import { FlowCanvas } from '@/features/editor/components/Canvas/FlowCanvas';
 import { NodeInspector } from '@/features/editor/components/Inspector/NodeInspector';
+import { EditorToolbar } from '@/features/editor/components/Toolbar/EditorToolbar';
 
 export default function FlowEditorPage() {
   const params = useParams<{ id: string }>();
   const id = params.id;
-
+  
   const { data: flow, isLoading, error } = useFlowById(id);
   const update = useUpdateFlow(id);
-
+  
   const updateNodePosition = useEditorStore((s) => s.updateNodePosition);
   
+  const addNode = useEditorStore((s) => s.addNode);
   const editorFlow = useEditorStore((s) => s.flow);
   const selectNode = useEditorStore((s) => s.selectNode);
   const dirty = useEditorStore((s) => s.dirty);
-  const diagnostics = useMemo(() => (flow ? validateFlow(flow) : []), [flow]);
+  const diagnostics = useEditorStore((s) => s.diagnostics);
+  const selectedNodeId = useEditorStore((s) => s.selectedNodeId);
   const blocking = useMemo(() => hasBlockingErrors(diagnostics), [diagnostics]);
   
   const setFlow = useEditorStore((s) => s.setFlow);
+
   useEffect(() => {
-    if (flow) setFlow(flow);
-  }, [flow, setFlow]);
-
-  const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
-
+  if (!flow) return;
+  if (!editorFlow || editorFlow.id !== flow.id) {
+    setFlow(flow);
+  }
+}, [flow, editorFlow, setFlow]);
 
   const selectedNode = useMemo(() => {
-  if (!flow || !selectedNodeId) return null;
-    return flow.nodes.find((n) => n.id === selectedNodeId) ?? null;
-  }, [flow, selectedNodeId]);
+    if (!editorFlow || !selectedNodeId) return null;
+    return editorFlow.nodes.find((n) => n.id === selectedNodeId) ?? null;
+  }, [editorFlow, selectedNodeId]);
 
   if (isLoading) return <main style={{ padding: 24 }}>Loading...</main>;
   if (error || !flow) return <main style={{ padding: 24 }}>Flow not found.</main>;
-
-
 
   return (
     <main style={{ padding: 24, display: 'grid', gap: 16 }}>
@@ -58,15 +60,20 @@ export default function FlowEditorPage() {
           </button>
         </div>
       </header>
+      {editorFlow && (
+        <EditorToolbar onAdd={addNode} />
+      )}
 
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 360px', gap: 12 }}>
-        <FlowCanvas
-            nodes={flow.nodes}
-            edges={flow.edges}
+        {editorFlow && (
+          <FlowCanvas
+            nodes={editorFlow.nodes}
+            edges={editorFlow.edges}
             selectedNodeId={selectedNodeId}
-            onSelectNode={setSelectedNodeId}
+            onSelectNode={selectNode}
             onMoveNode={(id, pos) => updateNodePosition(id, pos)}
-        />
+          />
+        )}
         <NodeInspector node={selectedNode} />
       </div>
 
