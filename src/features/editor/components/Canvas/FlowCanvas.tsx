@@ -1,6 +1,7 @@
 'use client';
 
-import ReactFlow, { Background, Controls } from 'reactflow';
+import { useEffect, useMemo, useRef } from 'react';
+import ReactFlow, { Background, Controls, type ReactFlowInstance } from 'reactflow';
 import 'reactflow/dist/style.css';
 
 import type { DomainEdge, DomainNode } from '@/domain/flow/types';
@@ -11,30 +12,50 @@ export function FlowCanvas({
   edges,
   onSelectNode,
   selectedNodeId,
+  onMoveNode,
 }: {
   nodes: DomainNode[];
   edges: DomainEdge[];
   selectedNodeId?: string | null;
   onSelectNode?: (nodeId: string | null) => void;
+  onMoveNode?: (nodeId: string, position: { x: number; y: number }) => void;
 }) {
-  const rfNodes = domainNodesToRF(nodes).map((n) => ({
-    ...n,
-    selected: n.id === selectedNodeId,
-  }));
+  const rfNodes = useMemo(() => {
+    return domainNodesToRF(nodes).map((n) => ({
+      ...n,
+      selected: n.id === selectedNodeId,
+    }));
+  }, [nodes, selectedNodeId]);
 
-  const rfEdges = domainEdgesToRF(edges);
+  const rfEdges = useMemo(() => domainEdgesToRF(edges), [edges]);
+
+  const rf = useRef<ReactFlowInstance | null>(null);
+  const didFit = useRef(false);
+
+  useEffect(() => {
+    didFit.current = false;
+  }, [nodes.length, edges.length]);
 
   return (
     <div style={{ height: 520, border: '1px solid #ddd', borderRadius: 8 }}>
       <ReactFlow
         nodes={rfNodes}
         edges={rfEdges}
-        nodesDraggable={false}
+        nodesDraggable
         nodesConnectable={false}
         elementsSelectable
+        zoomOnScroll
+        panOnDrag
+        onInit={(instance) => {
+          rf.current = instance;
+          if (!didFit.current) {
+            instance.fitView({ padding: 0.2 });
+            didFit.current = true;
+          }
+        }}
         onNodeClick={(_, node) => onSelectNode?.(node.id)}
         onPaneClick={() => onSelectNode?.(null)}
-        fitView
+        onNodeDragStop={(_, node) => onMoveNode?.(node.id, node.position)}
       >
         <Background />
         <Controls />

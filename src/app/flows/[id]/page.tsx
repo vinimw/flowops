@@ -1,6 +1,7 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import { useEditorStore } from '@/features/editor/store/editor.store';
 import { useParams } from 'next/navigation';
 import { useFlowById, useUpdateFlow } from '@/features/flows/hooks/useFlows';
 import { validateFlow, hasBlockingErrors } from '@/domain/flow/validate';
@@ -14,10 +15,21 @@ export default function FlowEditorPage() {
   const { data: flow, isLoading, error } = useFlowById(id);
   const update = useUpdateFlow(id);
 
+  const updateNodePosition = useEditorStore((s) => s.updateNodePosition);
+  
+  const editorFlow = useEditorStore((s) => s.flow);
+  const selectNode = useEditorStore((s) => s.selectNode);
+  const dirty = useEditorStore((s) => s.dirty);
   const diagnostics = useMemo(() => (flow ? validateFlow(flow) : []), [flow]);
   const blocking = useMemo(() => hasBlockingErrors(diagnostics), [diagnostics]);
+  
+  const setFlow = useEditorStore((s) => s.setFlow);
+  useEffect(() => {
+    if (flow) setFlow(flow);
+  }, [flow, setFlow]);
 
   const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
+
 
   const selectedNode = useMemo(() => {
   if (!flow || !selectedNodeId) return null;
@@ -26,6 +38,8 @@ export default function FlowEditorPage() {
 
   if (isLoading) return <main style={{ padding: 24 }}>Loading...</main>;
   if (error || !flow) return <main style={{ padding: 24 }}>Flow not found.</main>;
+
+
 
   return (
     <main style={{ padding: 24, display: 'grid', gap: 16 }}>
@@ -37,9 +51,8 @@ export default function FlowEditorPage() {
 
         <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
           <button
-            onClick={() => update.mutate(flow)}
-            disabled={update.isPending || blocking}
-            title={blocking ? 'Fix validation errors before saving.' : 'Save'}
+            onClick={() => editorFlow && update.mutate(editorFlow, { onSuccess: () => useEditorStore.getState().markSaved() })}
+            disabled={update.isPending || !dirty}
           >
             Save
           </button>
@@ -52,6 +65,7 @@ export default function FlowEditorPage() {
             edges={flow.edges}
             selectedNodeId={selectedNodeId}
             onSelectNode={setSelectedNodeId}
+            onMoveNode={(id, pos) => updateNodePosition(id, pos)}
         />
         <NodeInspector node={selectedNode} />
       </div>
