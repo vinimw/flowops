@@ -9,13 +9,17 @@ import { FlowCanvas } from '@/features/editor/components/Canvas/FlowCanvas';
 import { NodeInspector } from '@/features/editor/components/Inspector/NodeInspector';
 import { EditorToolbar } from '@/features/editor/components/Toolbar/EditorToolbar';
 
+
 export default function FlowEditorPage() {
   const params = useParams<{ id: string }>();
   const id = params.id;
   
+  
   const [selectedEdgeId, setSelectedEdgeId] = useState<string | null>(null);
   const deleteNode = useEditorStore((s) => s.deleteNode);
   const deleteEdge = useEditorStore((s) => s.deleteEdge);
+
+  const addEdge = useEditorStore((s) => s.addEdge);
   
   const { data: flow, isLoading, error } = useFlowById(id);
   const update = useUpdateFlow(id);
@@ -110,6 +114,7 @@ useEffect(() => {
             onMoveNode={(nodeId, pos) => updateNodePosition(nodeId, pos)}
             selectedEdgeId={selectedEdgeId}
             onSelectEdge={setSelectedEdgeId}
+            onConnectEdge={(source, target) => addEdge(source, target)}
           />
         )}
         <NodeInspector node={selectedNode} />

@@ -39,47 +39,55 @@
     "schemaVersion": 1,
     "nodes": [
       {
-        "id": "node_4086bc7a16305_19cf28fe574",
-        "type": "trigger",
+        "id": "node_3cdc537e65371_19cf3514aaa",
+        "type": "action",
         "position": {
-          "x": 80,
-          "y": 120
+          "x": 322,
+          "y": 289
         },
         "data": {
-          "triggerType": "manual",
-          "description": "Start"
+          "actionType": "http_request",
+          "config": {}
         }
       },
       {
-        "id": "node_255745da9e18c_19cf2c252fe",
-        "type": "agent",
+        "id": "node_51558d39e4c2c_19cf351e141",
+        "type": "action",
         "position": {
-          "x": 127,
-          "y": 212
+          "x": 120,
+          "y": 150
         },
         "data": {
-          "agentName": "Agent",
-          "instruction": "",
-          "model": "mock",
-          "timeoutMs": 15000
+          "actionType": "http_request",
+          "config": {}
         }
       },
       {
-        "id": "node_95b9c40dd086e_19cf2d0e313",
-        "type": "condition",
+        "id": "node_1891751f16ade_19cf351fe80",
+        "type": "output",
         "position": {
-          "x": 276,
-          "y": 71
+          "x": 154,
+          "y": 383
         },
         "data": {
-          "expression": "",
-          "trueLabel": "true",
-          "falseLabel": "false"
+          "format": "text",
+          "storeAs": "result"
         }
       }
     ],
-    "edges": [],
+    "edges": [
+      {
+        "id": "edge_edca0d6b6d72c_19cf351f357",
+        "source": "node_51558d39e4c2c_19cf351e141",
+        "target": "node_3cdc537e65371_19cf3514aaa"
+      },
+      {
+        "id": "edge_f3d72a921faa98_19cf3520c38",
+        "source": "node_3cdc537e65371_19cf3514aaa",
+        "target": "node_1891751f16ade_19cf351fe80"
+      }
+    ],
     "createdAt": "2026-03-15T17:34:02.612Z",
-    "updatedAt": "2026-03-15T18:45:17.408Z"
+    "updatedAt": "2026-03-15T21:06:09.249Z"
   }
 ]

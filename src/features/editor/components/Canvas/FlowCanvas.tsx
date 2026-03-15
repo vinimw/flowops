@@ -2,17 +2,18 @@
 
 import { useEffect, useMemo, useRef, useState } from 'react';
 import ReactFlow, {
-  Background,
-  Controls,
-  applyNodeChanges,
-  applyEdgeChanges,
-  type EdgeChange,
-  type NodeChange,
+    Background,
+    Controls,
+    applyNodeChanges,
+    applyEdgeChanges,
+    type EdgeChange,
+    type NodeChange,
 } from 'reactflow';
 import 'reactflow/dist/style.css';
 
 import type { DomainEdge, DomainNode } from '@/domain/flow/types';
 import { domainEdgesToRF, domainNodesToRF } from '@/features/editor/adapters/reactflow.adapter';
+import type { Connection } from 'reactflow';
 
 export function FlowCanvas({
   nodes,
@@ -23,6 +24,7 @@ export function FlowCanvas({
   onSelectEdge,
   selectedEdgeId,
   onDeleteEdge,
+  onConnectEdge,
 }: {
   nodes: DomainNode[];
   edges: DomainEdge[];
@@ -32,9 +34,11 @@ export function FlowCanvas({
   onSelectEdge?: (edgeId: string | null) => void;
   selectedEdgeId?: string | null;
   onDeleteEdge?: (edgeId: string) => void;
+  onConnectEdge?: (source: string, target: string) => void;
 }) {
   const [rfNodes, setRfNodes] = useState(() => domainNodesToRF(nodes));
   const [rfEdges, setRfEdges] = useState(() => domainEdgesToRF(edges));
+  
 
   useEffect(() => {
     setRfNodes(domainNodesToRF(nodes));
@@ -43,7 +47,6 @@ export function FlowCanvas({
   useEffect(() => {
     setRfEdges(domainEdgesToRF(edges));
   }, [edges]);
-
 
   const selectedId = selectedNodeId ?? null;
   const rfNodesWithSelection = useMemo(() => {
@@ -63,7 +66,7 @@ export function FlowCanvas({
         nodes={rfNodesWithSelection}
         edges={rfEdgesWithSelection}
         nodesDraggable
-        nodesConnectable={false}
+        nodesConnectable
         elementsSelectable
         panOnDrag
         zoomOnScroll
@@ -87,6 +90,10 @@ export function FlowCanvas({
         onPaneClick={() => {
           if (isDraggingRef.current) return;
           onSelectNode?.(null);
+        }}
+        onConnect={(c: Connection) => {
+          if (!c.source || !c.target) return;
+          onConnectEdge?.(c.source, c.target);
         }}
       >
         <Background />
