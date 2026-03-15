@@ -13,6 +13,10 @@ export default function FlowEditorPage() {
   const params = useParams<{ id: string }>();
   const id = params.id;
   
+  const [selectedEdgeId, setSelectedEdgeId] = useState<string | null>(null);
+  const deleteNode = useEditorStore((s) => s.deleteNode);
+  const deleteEdge = useEditorStore((s) => s.deleteEdge);
+  
   const { data: flow, isLoading, error } = useFlowById(id);
   const update = useUpdateFlow(id);
   
@@ -34,6 +38,38 @@ export default function FlowEditorPage() {
     setFlow(flow);
   }
 }, [flow, editorFlow, setFlow]);
+
+useEffect(() => {
+  function onKeyDown(e: KeyboardEvent) {
+    if (e.key === 'Escape') {
+      selectNode(null);
+      setSelectedEdgeId(null);
+      return;
+    }
+
+    if (e.key === 'Backspace' || e.key === 'Delete') {
+      const el = e.target as HTMLElement | null;
+      const tag = el?.tagName?.toLowerCase();
+      const isTyping =
+        tag === 'input' || tag === 'textarea' || (el as HTMLElement | null)?.isContentEditable;
+
+      if (isTyping) return;
+
+      if (selectedNodeId) {
+        deleteNode(selectedNodeId);
+        return;
+      }
+
+      if (selectedEdgeId) {
+        deleteEdge(selectedEdgeId);
+        setSelectedEdgeId(null);
+      }
+    }
+  }
+
+  window.addEventListener('keydown', onKeyDown);
+  return () => window.removeEventListener('keydown', onKeyDown);
+}, [selectedNodeId, selectedEdgeId, deleteNode, deleteEdge, selectNode]);
 
   const selectedNode = useMemo(() => {
     if (!editorFlow || !selectedNodeId) return null;
@@ -71,7 +107,9 @@ export default function FlowEditorPage() {
             edges={editorFlow.edges}
             selectedNodeId={selectedNodeId}
             onSelectNode={selectNode}
-            onMoveNode={(id, pos) => updateNodePosition(id, pos)}
+            onMoveNode={(nodeId, pos) => updateNodePosition(nodeId, pos)}
+            selectedEdgeId={selectedEdgeId}
+            onSelectEdge={setSelectedEdgeId}
           />
         )}
         <NodeInspector node={selectedNode} />
