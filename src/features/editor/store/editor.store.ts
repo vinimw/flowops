@@ -12,6 +12,7 @@ type EditorState = {
   addNode: (type: NodeType) => void;
   deleteNode: (nodeId: string) => void;
   deleteEdge: (edgeId: string) => void;
+  addEdge: (source: string, target: string, label?: string) => void;
 
   diagnostics: ReturnType<typeof validateFlow>;
 
@@ -105,6 +106,34 @@ export const useEditorStore = create<EditorState>()(
 
       const edges = flow.edges.filter((e) => e.id !== edgeId);
       const next: Flow = { ...flow, edges };
+
+      set({
+        flow: next,
+        dirty: true,
+        diagnostics: validateFlow(next),
+      });
+    },
+
+    addEdge: (source, target, label) => {
+      const flow = get().flow;
+      if (!flow) return;
+
+      const alreadyExists = flow.edges.some(
+        (e) =>
+          e.source === source &&
+          e.target === target &&
+          (e.label ?? "") === (label ?? "")
+      );
+      if (alreadyExists) return;
+
+      const nextEdge: DomainEdge = {
+        id: createId("edge"),
+        source,
+        target,
+        label,
+      };
+
+      const next: Flow = { ...flow, edges: [...flow.edges, nextEdge] };
 
       set({
         flow: next,
