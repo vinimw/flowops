@@ -1,4 +1,4 @@
-import type { DomainEdge, DomainNode } from './types';
+import type { DomainEdge, DomainNode } from "./types";
 
 export function buildAdjacency(nodes: DomainNode[], edges: DomainEdge[]) {
   const nodeIds = new Set(nodes.map((n) => n.id));
@@ -46,6 +46,5 @@ export function topoSort(nodes: DomainNode[], edges: DomainEdge[]): string[] {
 
 export function detectCycle(nodes: DomainNode[], edges: DomainEdge[]): boolean {
   const sorted = topoSort(nodes, edges);
-  
   return sorted.length !== nodes.length;
 }

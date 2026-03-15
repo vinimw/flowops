@@ -1,31 +1,26 @@
 export type SchemaVersion = 1;
-
-export type NodeType = 'trigger' | 'agent' | 'condition' | 'action' | 'output';
-
-export type RunStatus = 'running' | 'success' | 'error' | 'canceled';
-
-export type NodeStatus = 'idle' | 'running' | 'success' | 'error';
+export type NodeType = "trigger" | "agent" | "condition" | "action" | "output";
 
 export type Position = { x: number; y: number };
-
 export type ISODateString = string;
 
-export type TriggerType = 'manual' | 'webhook';
+export type RunStatus = "running" | "success" | "error" | "canceled";
+export type NodeStatus = "idle" | "running" | "success" | "error";
 
-export type ActionType = 'http_request' | 'transform' | 'notify';
+export type TriggerType = "manual" | "webhook";
+export type ActionType = "http_request" | "transform" | "notify";
+export type OutputFormat = "text" | "json";
 
-export type OutputFormat = 'text' | 'json';
-
-export type DiagnosticSeverity = 'error' | 'warn';
+export type DiagnosticSeverity = "error" | "warn";
 
 export type DiagnosticCode =
-  | 'NO_TRIGGER'
-  | 'MULTIPLE_TRIGGERS'
-  | 'NO_OUTPUT'
-  | 'EDGE_INVALID_ENDPOINT'
-  | 'CYCLE_DETECTED'
-  | 'CONDITION_NO_OUTPUT'
-  | 'CONDITION_MISSING_BRANCH';
+  | "NO_TRIGGER"
+  | "MULTIPLE_TRIGGERS"
+  | "NO_OUTPUT"
+  | "EDGE_INVALID_ENDPOINT"
+  | "CYCLE_DETECTED"
+  | "CONDITION_NO_OUTPUT"
+  | "CONDITION_MISSING_BRANCH";
 
 export type Diagnostic = {
   code: DiagnosticCode;
@@ -50,7 +45,7 @@ export type TriggerNodeData = {
 export type AgentNodeData = {
   agentName: string;
   instruction: string;
-  model: 'mock';
+  model: "mock";
   timeoutMs?: number;
 };
 
@@ -76,31 +71,36 @@ export type BaseDomainNode = {
 };
 
 export type TriggerNode = BaseDomainNode & {
-  type: 'trigger';
+  type: "trigger";
   data: TriggerNodeData;
 };
 
 export type AgentNode = BaseDomainNode & {
-  type: 'agent';
+  type: "agent";
   data: AgentNodeData;
 };
 
 export type ConditionNode = BaseDomainNode & {
-  type: 'condition';
+  type: "condition";
   data: ConditionNodeData;
 };
 
 export type ActionNode = BaseDomainNode & {
-  type: 'action';
+  type: "action";
   data: ActionNodeData;
 };
 
 export type OutputNode = BaseDomainNode & {
-  type: 'output';
+  type: "output";
   data: OutputNodeData;
 };
 
-export type DomainNode = TriggerNode | AgentNode | ConditionNode | ActionNode | OutputNode;
+export type DomainNode =
+  | TriggerNode
+  | AgentNode
+  | ConditionNode
+  | ActionNode
+  | OutputNode;
 
 export type Flow = {
   id: string;
