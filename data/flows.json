@@ -1,1 +1,36 @@
-[]
+[
+  {
+    "id": "flow_bb13e0f8b98398_19cf267b613",
+    "name": "asdsad",
+    "schemaVersion": 1,
+    "nodes": [
+      {
+        "id": "node_2368806853706_19cf267b613",
+        "type": "trigger",
+        "position": {
+          "x": 80,
+          "y": 120
+        },
+        "data": {
+          "triggerType": "manual",
+          "description": "Start"
+        }
+      },
+      {
+        "id": "node_86ab6c3da0813_19cf267b613",
+        "type": "output",
+        "position": {
+          "x": 480,
+          "y": 120
+        },
+        "data": {
+          "format": "text",
+          "storeAs": "result"
+        }
+      }
+    ],
+    "edges": [],
+    "createdAt": "2026-03-15T16:50:09.043Z",
+    "updatedAt": "2026-03-15T16:50:33.509Z"
+  }
+]
