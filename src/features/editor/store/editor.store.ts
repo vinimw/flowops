@@ -1,6 +1,12 @@
 import { create } from "zustand";
 import { subscribeWithSelector } from "zustand/middleware";
-import type { Flow, DomainNode, Position, NodeType } from "@/domain/flow/types";
+import type {
+  Flow,
+  DomainNode,
+  Position,
+  NodeType,
+  DomainEdge,
+} from "@/domain/flow/types";
 import { validateFlow } from "@/domain/flow/validate";
 import { createId } from "@/shared/lib/id";
 import { createNode } from "@/domain/flow/factory";
@@ -118,22 +124,25 @@ export const useEditorStore = create<EditorState>()(
       const flow = get().flow;
       if (!flow) return;
 
-      const alreadyExists = flow.edges.some(
+      const nodeIds = new Set(flow.nodes.map((n) => n.id));
+      if (!nodeIds.has(source) || !nodeIds.has(target)) return;
+
+      const dup = flow.edges.some(
         (e) =>
           e.source === source &&
           e.target === target &&
           (e.label ?? "") === (label ?? "")
       );
-      if (alreadyExists) return;
+      if (dup) return;
 
-      const nextEdge: DomainEdge = {
+      const edge: DomainEdge = {
         id: createId("edge"),
         source,
         target,
         label,
       };
 
-      const next: Flow = { ...flow, edges: [...flow.edges, nextEdge] };
+      const next: Flow = { ...flow, edges: [...flow.edges, edge] };
 
       set({
         flow: next,

@@ -89,5 +89,203 @@
     ],
     "createdAt": "2026-03-15T17:34:02.612Z",
     "updatedAt": "2026-03-15T21:06:09.249Z"
+  },
+  {
+    "id": "flow_9ad0000400f1a_19cf3f0193b",
+    "name": "test",
+    "schemaVersion": 1,
+    "nodes": [
+      {
+        "id": "node_8f6726fecb51d_19cf3f09a58",
+        "type": "condition",
+        "position": {
+          "x": 259,
+          "y": 183
+        },
+        "data": {
+          "expression": "",
+          "trueLabel": "true",
+          "falseLabel": "false"
+        }
+      },
+      {
+        "id": "node_c7cdfe845d6e1_19cf3f09c28",
+        "type": "action",
+        "position": {
+          "x": 488,
+          "y": 368
+        },
+        "data": {
+          "actionType": "http_request",
+          "config": {}
+        }
+      },
+      {
+        "id": "node_84f6a41e75bf3_19cf3f0c4f7",
+        "type": "action",
+        "position": {
+          "x": 230,
+          "y": 68
+        },
+        "data": {
+          "actionType": "http_request",
+          "config": {}
+        }
+      },
+      {
+        "id": "node_f87f8a5d11fa3_19cf3f0c6b2",
+        "type": "output",
+        "position": {
+          "x": 673,
+          "y": 101
+        },
+        "data": {
+          "format": "text",
+          "storeAs": "result"
+        }
+      },
+      {
+        "id": "node_594e3ab268966_19cf3f13378",
+        "type": "trigger",
+        "position": {
+          "x": 169,
+          "y": 366
+        },
+        "data": {
+          "triggerType": "manual",
+          "description": "Start"
+        }
+      }
+    ],
+    "edges": [
+      {
+        "id": "edge_5c000b57346098_19cf3f0a9aa",
+        "source": "node_8f6726fecb51d_19cf3f09a58",
+        "target": "node_c7cdfe845d6e1_19cf3f09c28"
+      },
+      {
+        "id": "edge_2e4bf08a7977d_19cf3f0d551",
+        "source": "node_84f6a41e75bf3_19cf3f0c4f7",
+        "target": "node_f87f8a5d11fa3_19cf3f0c6b2"
+      },
+      {
+        "id": "edge_2065d5350c581_19cf3f0dd1b",
+        "source": "node_f87f8a5d11fa3_19cf3f0c6b2",
+        "target": "node_c7cdfe845d6e1_19cf3f09c28"
+      }
+    ],
+    "createdAt": "2026-03-15T23:58:44.539Z",
+    "updatedAt": "2026-03-16T00:00:00.354Z"
+  },
+  {
+    "id": "flow_d374d714550238_19cf76d0a3d",
+    "name": "new one",
+    "schemaVersion": 1,
+    "nodes": [
+      {
+        "id": "node_57992d2147083_19cf76d0a3d",
+        "type": "trigger",
+        "position": {
+          "x": 138,
+          "y": 99
+        },
+        "data": {
+          "triggerType": "manual",
+          "description": "Start"
+        }
+      },
+      {
+        "id": "node_3b330d7fbd6a5_19cf76d0a3d",
+        "type": "output",
+        "position": {
+          "x": 488,
+          "y": 261
+        },
+        "data": {
+          "format": "text",
+          "storeAs": "result"
+        }
+      },
+      {
+        "id": "node_8a8c3d00b584f8_19cf92d119a",
+        "type": "condition",
+        "position": {
+          "x": 753,
+          "y": 76
+        },
+        "data": {
+          "expression": "",
+          "trueLabel": "true",
+          "falseLabel": "false"
+        }
+      },
+      {
+        "id": "node_338b228a4c1148_19cf92d133e",
+        "type": "action",
+        "position": {
+          "x": 437,
+          "y": 59
+        },
+        "data": {
+          "actionType": "http_request",
+          "config": {}
+        }
+      },
+      {
+        "id": "node_f7e75b23a24d4_19cf92d3b4a",
+        "type": "output",
+        "position": {
+          "x": 712,
+          "y": 389
+        },
+        "data": {
+          "format": "text",
+          "storeAs": "result"
+        }
+      },
+      {
+        "id": "node_e2005b7d381f5_19cf92d55d5",
+        "type": "agent",
+        "position": {
+          "x": 334,
+          "y": 419
+        },
+        "data": {
+          "agentName": "Agent",
+          "instruction": "",
+          "model": "mock",
+          "timeoutMs": 15000
+        }
+      }
+    ],
+    "edges": [
+      {
+        "id": "edge_fef35cb424a0d_19cf92d079c",
+        "source": "node_57992d2147083_19cf76d0a3d",
+        "target": "node_3b330d7fbd6a5_19cf76d0a3d"
+      },
+      {
+        "id": "edge_a923d9ffaa7f88_19cf92d23a5",
+        "source": "node_338b228a4c1148_19cf92d133e",
+        "target": "node_3b330d7fbd6a5_19cf76d0a3d"
+      },
+      {
+        "id": "edge_0e9c4331c959f_19cf92d2d52",
+        "source": "node_8a8c3d00b584f8_19cf92d119a",
+        "target": "node_3b330d7fbd6a5_19cf76d0a3d"
+      },
+      {
+        "id": "edge_968c176281ea5_19cf92d4799",
+        "source": "node_3b330d7fbd6a5_19cf76d0a3d",
+        "target": "node_f7e75b23a24d4_19cf92d3b4a"
+      },
+      {
+        "id": "edge_a3c2664f623b2_19cf92d6420",
+        "source": "node_3b330d7fbd6a5_19cf76d0a3d",
+        "target": "node_e2005b7d381f5_19cf92d55d5"
+      }
+    ],
+    "createdAt": "2026-03-16T16:14:04.349Z",
+    "updatedAt": "2026-03-17T00:23:50.214Z"
   }
 ]
