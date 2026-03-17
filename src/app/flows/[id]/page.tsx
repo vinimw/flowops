@@ -18,6 +18,8 @@ export default function FlowEditorPage() {
   const [selectedEdgeId, setSelectedEdgeId] = useState<string | null>(null);
   const deleteNode = useEditorStore((s) => s.deleteNode);
   const deleteEdge = useEditorStore((s) => s.deleteEdge);
+
+  const updateNodeData = useEditorStore((s) => s.updateNodeData);
   
   const undo = useEditorStore((s) => s.undo);
   const redo = useEditorStore((s) => s.redo);
@@ -137,7 +139,10 @@ useEffect(() => {
             onConnectEdge={(source, target) => addEdge(source, target)}
           />
         )}
-        <NodeInspector node={selectedNode} />
+        <NodeInspector
+          node={selectedNode}
+          onChange={(nodeId, nextData) => updateNodeData(nodeId, nextData)}
+        />
       </div>
 
       <section style={{ border: '1px solid #ddd', borderRadius: 8, padding: 12 }}>

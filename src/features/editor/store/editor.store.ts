@@ -12,6 +12,7 @@ import {
   deleteNodeCommand,
   deleteEdgeCommand,
   moveNodeCommand,
+  updateNodeDataCommand,
 } from "@/features/editor/commands/commands";
 
 type EditorState = {
@@ -26,6 +27,7 @@ type EditorState = {
   dispatch: (cmd: Command) => void;
   undo: () => void;
   redo: () => void;
+  updateNodeData: (nodeId: string, nextData: Record<string, unknown>) => void;
 
   diagnostics: ReturnType<typeof validateFlow>;
 
@@ -53,6 +55,19 @@ export const useEditorStore = create<EditorState>()(
         selectedNodeId: null,
         diagnostics: validateFlow(flow),
       });
+    },
+
+    updateNodeData: (nodeId, nextData) => {
+      const flow = get().flow;
+      if (!flow) return;
+
+      const node = flow.nodes.find((n) => n.id === nodeId);
+      if (!node) return;
+
+      const prevData = node.data;
+      if (prevData === nextData) return;
+
+      get().dispatch(updateNodeDataCommand(nodeId, prevData, nextData));
     },
 
     selectNode: (id) => set({ selectedNodeId: id }),
