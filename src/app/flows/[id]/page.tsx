@@ -18,6 +18,7 @@ export default function FlowEditorPage() {
   const [selectedEdgeId, setSelectedEdgeId] = useState<string | null>(null);
   const deleteNode = useEditorStore((s) => s.deleteNode);
   const deleteEdge = useEditorStore((s) => s.deleteEdge);
+  
 
   const addEdge = useEditorStore((s) => s.addEdge);
   
@@ -87,8 +88,8 @@ useEffect(() => {
     <main style={{ padding: 24, display: 'grid', gap: 16 }}>
       <header style={{ display: 'flex', justifyContent: 'space-between', gap: 12 }}>
         <div>
-          <h1 style={{ margin: 0 }}>{flow.name}</h1>
-          <div style={{ fontSize: 12, opacity: 0.7 }}>ID: {flow.id}</div>
+          <h1 style={{ margin: 0 }}>{editorFlow?.name ?? flow.name}</h1>
+          <div style={{ fontSize: 12, opacity: 0.7 }}>ID: {editorFlow?.id ?? flow.id}</div>
         </div>
 
         <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>

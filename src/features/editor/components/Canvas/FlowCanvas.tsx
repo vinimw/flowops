@@ -87,9 +87,11 @@ export function FlowCanvas({
             isDraggingRef.current = false;
           }, 0);
         }}
+        onEdgeClick={(_, edge) => onSelectEdge?.(edge.id)}
         onPaneClick={() => {
-          if (isDraggingRef.current) return;
-          onSelectNode?.(null);
+        if (isDraggingRef.current) return;
+        onSelectNode?.(null);
+        onSelectEdge?.(null);
         }}
         onConnect={(c: Connection) => {
           if (!c.source || !c.target) return;
