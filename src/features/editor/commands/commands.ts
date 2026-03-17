@@ -79,3 +79,25 @@ export function deleteNodeCommand(
     }),
   };
 }
+
+export function updateNodeDataCommand(
+  nodeId: string,
+  prevData: any,
+  nextData: any
+): Command {
+  return {
+    name: "UPDATE_NODE_DATA",
+    do: (flow) => ({
+      ...flow,
+      nodes: flow.nodes.map((n) =>
+        n.id === nodeId ? { ...n, data: nextData } : n
+      ),
+    }),
+    undo: (flow) => ({
+      ...flow,
+      nodes: flow.nodes.map((n) =>
+        n.id === nodeId ? { ...n, data: prevData } : n
+      ),
+    }),
+  };
+}
