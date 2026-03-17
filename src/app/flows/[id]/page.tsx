@@ -19,6 +19,8 @@ export default function FlowEditorPage() {
   const deleteNode = useEditorStore((s) => s.deleteNode);
   const deleteEdge = useEditorStore((s) => s.deleteEdge);
   
+  const undo = useEditorStore((s) => s.undo);
+  const redo = useEditorStore((s) => s.redo);
 
   const addEdge = useEditorStore((s) => s.addEdge);
   
@@ -46,20 +48,37 @@ export default function FlowEditorPage() {
 
 useEffect(() => {
   function onKeyDown(e: KeyboardEvent) {
-    if (e.key === 'Escape') {
+    const isMod = e.metaKey || e.ctrlKey;
+    const key = e.key.toLowerCase();
+
+    const el = e.target as HTMLElement | null;
+    const tag = el?.tagName?.toLowerCase();
+    const isTyping =
+      tag === 'input' || tag === 'textarea' || (el as HTMLElement | null)?.isContentEditable;
+
+    if (isMod && !isTyping && key === 'z') {
+      e.preventDefault();
+      if (e.shiftKey) {
+        redo();
+      } else {
+        undo();
+      }
+      return;
+    }
+
+    if (isMod && !isTyping && key === 'y') {
+      e.preventDefault();
+      redo();
+      return;
+    }
+
+    if (key === 'escape') {
       selectNode(null);
       setSelectedEdgeId(null);
       return;
     }
 
-    if (e.key === 'Backspace' || e.key === 'Delete') {
-      const el = e.target as HTMLElement | null;
-      const tag = el?.tagName?.toLowerCase();
-      const isTyping =
-        tag === 'input' || tag === 'textarea' || (el as HTMLElement | null)?.isContentEditable;
-
-      if (isTyping) return;
-
+    if (!isTyping && (key === 'backspace' || key === 'delete')) {
       if (selectedNodeId) {
         deleteNode(selectedNodeId);
         return;
@@ -74,7 +93,7 @@ useEffect(() => {
 
   window.addEventListener('keydown', onKeyDown);
   return () => window.removeEventListener('keydown', onKeyDown);
-}, [selectedNodeId, selectedEdgeId, deleteNode, deleteEdge, selectNode]);
+}, [undo, redo, selectedNodeId, selectedEdgeId, deleteNode, deleteEdge, selectNode]);
 
   const selectedNode = useMemo(() => {
     if (!editorFlow || !selectedNodeId) return null;
