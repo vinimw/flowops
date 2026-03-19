@@ -14,6 +14,8 @@ export default function FlowEditorPage() {
   const params = useParams<{ id: string }>();
   const id = params.id;
   
+  type SaveStatus = 'idle' | 'dirty' | 'saving' | 'saved' | 'blocked';
+  const [saveStatus, setSaveStatus] = useState<SaveStatus>('idle');
   
   const [selectedEdgeId, setSelectedEdgeId] = useState<string | null>(null);
   const deleteNode = useEditorStore((s) => s.deleteNode);
@@ -47,6 +49,38 @@ export default function FlowEditorPage() {
     setFlow(flow);
   }
 }, [flow, editorFlow, setFlow]);
+
+useEffect(() => {
+  if (!editorFlow) return;
+
+  const hasError = diagnostics.some((d) => d.severity === 'error');
+
+  if (!dirty) {
+    setSaveStatus('saved');
+    return;
+  }
+
+  if (hasError) {
+    setSaveStatus('blocked');
+    return;
+  }
+
+  setSaveStatus('dirty');
+
+  const t = window.setTimeout(async () => {
+    setSaveStatus('saving');
+
+    try {
+      await update.mutateAsync(editorFlow);
+      useEditorStore.getState().markSaved();
+      setSaveStatus('saved');
+    } catch {
+      setSaveStatus('dirty');
+    }
+  }, 2000);
+
+  return () => window.clearTimeout(t);
+}, [dirty, diagnostics, editorFlow, update]);
 
 useEffect(() => {
   function onKeyDown(e: KeyboardEvent) {
@@ -112,15 +146,41 @@ useEffect(() => {
           <h1 style={{ margin: 0 }}>{editorFlow?.name ?? flow.name}</h1>
           <div style={{ fontSize: 12, opacity: 0.7 }}>ID: {editorFlow?.id ?? flow.id}</div>
         </div>
-
         <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
+          <span
+            style={{
+              fontSize: 12,
+              padding: '4px 8px',
+              borderRadius: 999,
+              border: '1px solid #ddd',
+              opacity: 0.9,
+            }}
+            title={
+              saveStatus === 'blocked'
+                ? 'Fix validation errors before saving.'
+                : saveStatus === 'saving'
+                ? 'Saving changes...'
+                : undefined
+            }
+          >
+            {saveStatus === 'saving' && 'Saving…'}
+            {saveStatus === 'dirty' && 'Dirty'}
+            {saveStatus === 'saved' && 'Saved'}
+            {saveStatus === 'blocked' && 'Blocked'}
+            {saveStatus === 'idle' && 'Idle'}
+          </span>
+
           <button
-            onClick={() => editorFlow && update.mutate(editorFlow, { onSuccess: () => useEditorStore.getState().markSaved() })}
+            onClick={() =>
+              editorFlow &&
+              update.mutate(editorFlow, { onSuccess: () => useEditorStore.getState().markSaved() })
+            }
             disabled={update.isPending || !dirty}
           >
             Save
           </button>
         </div>
+        
       </header>
       {editorFlow && (
         <EditorToolbar onAdd={addNode} />
