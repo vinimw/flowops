@@ -64,7 +64,7 @@ export const useEditorStore = create<EditorState>()(
       const node = flow.nodes.find((n) => n.id === nodeId);
       if (!node) return;
 
-      const prevData = node.data;
+      const prevData = node.data as Record<string, unknown>;
       if (prevData === nextData) return;
 
       get().dispatch(updateNodeDataCommand(nodeId, prevData, nextData));
