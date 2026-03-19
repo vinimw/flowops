@@ -1,5 +1,10 @@
 import type { Command } from "./command-stack";
-import type { DomainEdge, DomainNode, Position } from "@/domain/flow/types";
+import type {
+  Flow,
+  DomainEdge,
+  DomainNode,
+  Position,
+} from "@/domain/flow/types";
 
 export function addNodeCommand(node: DomainNode): Command {
   return {
@@ -82,8 +87,8 @@ export function deleteNodeCommand(
 
 export function updateNodeDataCommand(
   nodeId: string,
-  prevData: any,
-  nextData: any
+  prevData: Record<string, unknown>,
+  nextData: Record<string, unknown>
 ): Command {
   return {
     name: "UPDATE_NODE_DATA",

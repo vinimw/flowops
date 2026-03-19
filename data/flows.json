@@ -186,35 +186,35 @@
         "id": "node_57992d2147083_19cf76d0a3d",
         "type": "trigger",
         "position": {
-          "x": 105,
-          "y": 141
+          "x": 154,
+          "y": 127
         },
         "data": {
           "triggerType": "manual",
-          "description": "Start"
+          "description": "Start asd"
         }
       },
       {
         "id": "node_3b330d7fbd6a5_19cf76d0a3d",
         "type": "output",
         "position": {
-          "x": 488,
+          "x": 576,
           "y": 261
         },
         "data": {
-          "format": "text",
-          "storeAs": "result sadsad"
+          "format": "json",
+          "storeAs": "result sadsad "
         }
       },
       {
         "id": "node_8a8c3d00b584f8_19cf92d119a",
         "type": "condition",
         "position": {
-          "x": 753,
-          "y": 76
+          "x": 640,
+          "y": 66
         },
         "data": {
-          "expression": "",
+          "expression": "wqeqwewqe",
           "trueLabel": "true",
           "falseLabel": "false"
         }
@@ -223,8 +223,8 @@
         "id": "node_338b228a4c1148_19cf92d133e",
         "type": "action",
         "position": {
-          "x": 437,
-          "y": 59
+          "x": 332,
+          "y": 64
         },
         "data": {
           "actionType": "http_request",
@@ -286,6 +286,6 @@
       }
     ],
     "createdAt": "2026-03-16T16:14:04.349Z",
-    "updatedAt": "2026-03-17T17:22:50.834Z"
+    "updatedAt": "2026-03-19T22:45:23.208Z"
   }
 ]
