@@ -10,7 +10,7 @@ export type RFNodeData = {
 export function domainNodesToRF(nodes: DomainNode[]): RFNode<RFNodeData>[] {
   return nodes.map((n) => ({
     id: n.id,
-    type: 'default',
+    type: n.type,
     position: n.position,
     data: {
       type: n.type,

@@ -196,7 +196,7 @@ useEffect(() => {
             onMoveNode={(nodeId, pos) => updateNodePosition(nodeId, pos)}
             selectedEdgeId={selectedEdgeId}
             onSelectEdge={setSelectedEdgeId}
-            onConnectEdge={(source, target) => addEdge(source, target)}
+            onConnectEdge={(source, target, label) => addEdge(source, target, label)}
           />
         )}
         <NodeInspector

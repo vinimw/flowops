@@ -15,6 +15,12 @@ import type { DomainEdge, DomainNode } from '@/domain/flow/types';
 import { domainEdgesToRF, domainNodesToRF } from '@/features/editor/adapters/reactflow.adapter';
 import type { Connection } from 'reactflow';
 
+import { TriggerNode } from '@/features/editor/components/Nodes/TriggerNode';
+import { AgentNode } from '@/features/editor/components/Nodes/AgentNode';
+import { ActionNode } from '@/features/editor/components/Nodes/ActionNode';
+import { OutputNode } from '@/features/editor/components/Nodes/OutputNode';
+import { ConditionNode } from '@/features/editor/components/Nodes/ConditionNode';
+
 export function FlowCanvas({
   nodes,
   edges,
@@ -38,6 +44,14 @@ export function FlowCanvas({
 }) {
   const [rfNodes, setRfNodes] = useState(() => domainNodesToRF(nodes));
   const [rfEdges, setRfEdges] = useState(() => domainEdgesToRF(edges));
+
+  const nodeTypes = {
+    trigger: TriggerNode,
+    agent: AgentNode,
+    action: ActionNode,
+    output: OutputNode,
+    condition: ConditionNode,
+  };
   
 
   useEffect(() => {
@@ -70,6 +84,7 @@ export function FlowCanvas({
         elementsSelectable
         panOnDrag
         zoomOnScroll
+        nodeTypes={nodeTypes}
         onNodesChange={(changes: NodeChange[]) => {
           setRfNodes((prev) => applyNodeChanges(changes, prev));
         }}
@@ -95,7 +110,8 @@ export function FlowCanvas({
         }}
         onConnect={(c: Connection) => {
           if (!c.source || !c.target) return;
-          onConnectEdge?.(c.source, c.target);
+          const label = c.sourceHandle === 'true' ? 'true' : c.sourceHandle === 'false' ? 'false' : undefined;
+          onConnectEdge?.(c.source, c.target, label);
         }}
       >
         <Background />
